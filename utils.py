@@ -17,4 +17,4 @@ def openFileForWriting(filename):
 def closeFile(file):
     file.flush()
     file.close()
-    return True
+    return

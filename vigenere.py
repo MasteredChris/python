@@ -1,46 +1,44 @@
 from cesare import *
 
-def cifra(testobase,chiavebase):
-    """implementa il cifrario di vigenere, ricordare di mettere un testo come chiave"""
-    if not (validoTestoXCesare(testobase) and validoTestoXCesare(chiavebase)):
-        return _errore_nei_parametri
-    chiave = armonizza(testobase,chiavebase) #mi accerto che abbia la stessa lunghezza
-    risultato = ""
-    testo = testobase.lower()
-    for i in range(0,len(testo)):
-        inChiaro = testo[i]
-        charChiave = chiave[i];
-        intChiave = ord(charChiave) - charA
-        criptato = cifraCesare(inChiaro,intChiave)
-        risultato += criptato
-    return risultato
+def creaValoreChiave(lettera):
+    alfabeto="abcdefghijklmnopqrstuvwxyz"
+    indice=alfabeto.find(lettera)
+    return indice
 
-def decifra(cifratobase,chiavebase):
-    """implementa il cifrario di vigenere, ricordare di mettere un testo come chiave"""
-    if not (validoTestoXCesare(cifratobase) and validoTestoXCesare(chiavebase)):
-        return _errore_nei_parametri
-    chiave = armonizza(cifratobase,chiavebase) #mi accerto che abbia la stessa lunghezza
-    risultato = ""
-    cifrato = cifratobase.lower()
-    for i in range(0,len(cifrato)):
-        cifra = cifrato[i]
-        charChiave = chiave[i];
-        intChiave = ord(charChiave) - charA
-        inchiaro = decifraCesare(cifra,intChiave)
-        risultato += inchiaro
-    return risultato
+def creaChiave(testo,chiave):
+    newKey=""
+    while(len(newKey)<len(testo)):
+        newKey+=chiave
+    return newKey[0:len(testo):1]
 
-#####################################################################################################
-# se siamo nel main
-#####################################################################################################
+def cifraVigenere(testo,chiave):
+    cifrato=""
+    for i in range(len(testo)):
+        carattere=testo[i]
+        lettera=chiave[i]
+        indice=creaValoreChiave(lettera)
+        cifrato+=cifra(carattere,indice)
+    return cifrato
+
+def decifraVigenere(testo,chiave):
+    decifrato=""
+    for i in range(len(testo)):
+        carattere=testo[i]
+        lettera=chiave[i]
+        indice=creaValoreChiave(lettera)
+        decifrato+=decifra(carattere,indice)
+    return decifrato
+
 if __name__ == "__main__":
-        print("Verifica dei metodi di cifratura")
-        inChiaro =  "CiaoDoveAndiamoOggi"
-        chiave = "claudio"
-        #####
-        cifrato = cifra(inChiaro,chiave)
-        decifrato = decifra(cifrato,chiave)
-        verificaVigenere = inChiaro.lower() == decifra(cifra(inChiaro,chiave),chiave)
-        print("Verifica dei metodi cifra() e decifra(): esito", str(verificaVigenere))
-        print(inChiaro.lower()," [vigenere(",chiave,")]-> ",cifrato, " -> ",decifrato)
-
+    print("Inserisci del testo: ")
+    testo=input()
+    print("Inserisci la chiave: ")
+    chiave=input()
+    Key=creaChiave(testo,chiave)
+    print("Chiave: ",Key)
+    print("Testo cifrato: ", cifraVigenere(testo,Key))
+    print("Testo decifrato: ", decifraVigenere(cifraVigenere(testo,Key),Key))
+    if(testo==decifraVigenere(cifraVigenere(testo,Key),Key)):
+        print("Funziona")
+    else:
+        print("Non funziona")
